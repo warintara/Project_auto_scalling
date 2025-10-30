@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: redis-master-deployment
+spec:
+  selector: 
+    matchLabels:
+      app: redis-master
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: redis-master
+    spec:
+      containers:
+      - name: redis-master
+        image: redis:7-alpine # et pas redis:7-alpine # pas besoin de docker ,Redis est déjà disponible en image officielle !
+        command: ["redis-server", "--appendonly", "yes"] #commande de démarrage en mode persistance
+        ports:
+          - containerPort: 6379 #Par convention, Redis écoute sur le port 6379.
+      # conserver les données Redis même après suppression du Pod
+        volumeMounts: # où monter le volume dans le conteneur
+          - name: redis-storage
+            mountPath: /data # C’est l’endroit à l’intérieur du conteneur Redis où ce volume sera visible.
+      volumes: # d’où vient ce volume
+        - name: redis-storage
+          persistentVolumeClaim:
+            claimName: redis-pvc # Nom du PVC à utiliser

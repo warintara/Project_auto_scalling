@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: redis-replicas-deployment
+spec:
+  selector: 
+    matchLabels:
+      app: redis-replicas
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: redis-replicas
+    spec:
+      containers:
+      - name: redis-replicas
+        image: redis:7-alpine # et pas redis:7-alpine # pas besoin de docker ,Redis est déjà disponible en image officielle !
+        command: ["redis-server", "--replicaof", "redis-master", "6379"] # Les replicas se synchronisent automatiquement depuis le master
+        ports:
+          - containerPort: 6379 #Par convention, Redis écoute sur le port 6379.
+      # n’as pas besoin de volumeMounts ni de volumes

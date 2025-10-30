@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: redis-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce # Les replicas lisent les données via le protocole Redis,
+                    #pas en partageant un disque commun.
+                    # Redis n’est pas conçu pour partager un fichier de données entre plusieurs instances.
+                    # donc on utilise pas RWX
+  resources:
+    requests:
+      storage: 1Gi
