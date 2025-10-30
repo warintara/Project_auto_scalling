@@ -1,0 +1,62 @@
+version: "3.9"
+
+services:
+  # --- Redis master ---
+  redis-master:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"
+    networks:
+      - app-net
+    volumes:
+      - redis-master-data:/data
+
+  # --- Redis replica ---
+  redis-replica:
+    image: redis:7-alpine
+    command: ["redis-server", "--replicaof", "redis-master", "6379"]
+    depends_on:
+      - redis-master
+    networks:
+      - app-net
+
+  # --- Backend Node.js ---
+  node-server:
+    build:
+      context: ./redis-node-master
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - REDIS_URL=redis://redis-master:6379
+      - REDIS_REPLICA_URL=redis://redis-replica:6379
+    depends_on:
+      - redis-master
+      - redis-replica
+    networks:
+      - app-net
+
+  # --- Frontend React ---
+  react-client:
+    build:
+      context: ./redis-react-master
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    environment:
+      - REACT_APP_API_URL=http://node-server:3000
+    depends_on:
+      - node-server
+    networks:
+      - app-net
+
+# --- Réseau commun ---
+networks:
+  app-net:
+    driver: bridge
+
+# --- Volume pour la persistance ---
+volumes:
+  redis-master-data:
+
