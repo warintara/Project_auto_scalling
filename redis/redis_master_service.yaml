@@ -1,0 +1,13 @@
+#services pour communiquer entre le redis master et les autres redis replicas? 
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-mas-service
+spec:
+  selector:
+    app: redis-master
+  ports: 
+    - port: 6379
+      targetPort: 6379
+      protocol: TCP
+  type: ClusterIP

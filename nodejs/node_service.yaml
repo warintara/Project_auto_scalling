@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: node-service
+spec:
+  selector:
+    app: node #Il pointe vers le label que tu donnes aux Pods dans ton Deployment
+  ports: 
+  - port: 3000
+    targetPort: 3000
+    protocol: TCP
+    nodePort: 30000 # port valide pour nodePort
+  type: NodePort

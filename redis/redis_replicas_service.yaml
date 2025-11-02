@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-rep-service
+spec:
+  selector:
+    app: redis-replicas
+  ports: 
+    - port: 6379
+      targetPort: 6379
+      protocol: TCP
+# Ici on n’a pas besoin d’un type: 
+#NodePort car ce service ne doit être
+# accessible que depuis l’intérieur du cluster
+
+# clusterIP: None => Permet au client d’adresser
+#  chaque instance (replica-0, replica-1, etc.)

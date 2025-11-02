@@ -15,5 +15,6 @@ spec:
         containers:
         - name: node
           image: node-app:latest
+          imagePullPolicy: Never # pour éviter que minikube prend les images à partir de github et prend les image localment
           ports:
           - containerPort: 3000
