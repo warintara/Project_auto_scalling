@@ -8,6 +8,6 @@ spec:
   ports: 
   - port: 3000
     targetPort: 3000
-    protocol: TCP
-    nodePort: 30000 # port valide pour nodePort
+    #protocol: TCP
+    nodePort: 30081 # port valide pour nodePort
   type: NodePort

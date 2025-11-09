@@ -17,7 +17,6 @@ spec:
           imagePullPolicy: Never
           ports:
           - containerPort: 80
-          env:
-          - name: URL
-            value: "http://node-service:3000" # pour resoudre le probleme d’appeler le backend à http://localhost:3000,
+
+           # pour resoudre le probleme d’appeler le backend à http://localhost:3000,
 #alors que dans ton cluster Kubernetes, ton backend est exposé à http://node-service:3000 (ou via http://192.168.49.2:30000 depuis l’extérieur).

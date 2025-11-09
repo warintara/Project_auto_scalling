@@ -6,7 +6,7 @@ spec:
     selector: 
       matchLabels:
         app: node
-    replicas: 1
+    replicas: 2
     template:
       metadata:
         labels:
@@ -18,3 +18,10 @@ spec:
           imagePullPolicy: Never # pour éviter que minikube prend les images à partir de github et prend les image localment
           ports:
           - containerPort: 3000
+          args: ["node", "main.js"]
+          env: #injecter la bonne adresse Redis dans le pod via une variable d’environnement pour accèder via le bon nom du service Kubernetes
+            - name: REDIS_URL
+              value: "redis://redis-master:6379"
+            - name: REDIS_REPLICAS_URL
+              value: "redis://redis-rep-service:6379"
+        
