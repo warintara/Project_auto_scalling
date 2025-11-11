@@ -19,6 +19,11 @@ echo "📤 Chargement des images dans Minikube..."
 minikube image load node-app:latest
 minikube image load react-app:latest
 
+# creer un namespace de monitoring pour isoler tout ce qui est relatif au monitoring, c'est un bon pratique 
+kubectl create namespace monitoring
+# utiliser kubectl get all -n monitoring pour voir Prometheus et Grafana dans ce namespace
+
+
 echo "📄 Application des manifests Kubernetes..."
 kubectl apply -f redis/
 kubectl apply -f nodejs/
