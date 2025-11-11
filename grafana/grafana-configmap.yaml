@@ -1,0 +1,11 @@
+# In Kubernetes, a ConfigMap is an API object 
+#that can store data using a key-value pairs approach.
+# Each key is a string with a corresponding value.
+# Another way to feed configuration data to containers without embedding 
+# it in containers themselves is to use environment variables. 
+# so configmap can either be used as data storage or environment variable ? or even a secret storage ? 
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-configmap
+data:

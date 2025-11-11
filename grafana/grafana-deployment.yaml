@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: grafana-deployment
+spec:
+  selector: 
+    matchLabels:
+      app: grafana
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      containers:
+      - name: grafana
+        image: grafana:7-alpine 
+        command: ["grafana-server", "--appendonly", "yes"] 
+        ports:
+          - containerPort: 6379 
+        volumeMounts: 
+          - name: grafana-storage
+            mountPath: /data 
+      volumes: 
+        - name: grafana-storage
+          persistentVolumeClaim:
+            claimName: grafana-pvc 
+#----------------------------------------------
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana
+spec:
+  selector:
+    app: grafana
+  ports: 
+    - port: 6379
+      targetPort: 6379
+      protocol: TCP
+  type: ClusterIP
