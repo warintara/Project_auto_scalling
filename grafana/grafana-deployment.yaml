@@ -14,17 +14,22 @@ spec:
     spec:
       containers:
       - name: grafana
-        image: grafana:7-alpine 
-        command: ["grafana-server", "--appendonly", "yes"] 
+        image: grafana/grafana:latest 
         ports:
-          - containerPort: 6379 
+          - containerPort: 3000 
         volumeMounts: 
           - name: grafana-storage
-            mountPath: /data 
+            mountPath: /var/lib/grafana #Grafana stocke son état (dashboards, datasources, etc.) dans /var/lib/grafana
+          - name: grafana-config
+            mountPath: /etc/grafana/provisioning/datasources
       volumes: 
         - name: grafana-storage
           persistentVolumeClaim:
             claimName: grafana-pvc 
+        - name: grafana-config
+          configMap:
+            name: grafana-configmap
+
 #----------------------------------------------
 apiVersion: v1
 kind: Service
@@ -34,7 +39,7 @@ spec:
   selector:
     app: grafana
   ports: 
-    - port: 6379
-      targetPort: 6379
+    - port: 3000
+      targetPort: 3000
       protocol: TCP
   type: ClusterIP
