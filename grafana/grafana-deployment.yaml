@@ -5,12 +5,12 @@ metadata:
 spec:
   selector: 
     matchLabels:
-      app: grafana
-  replicas: 1
+      app: grafana # Ce deployment gere que les pods qui s'appellent "grafana"
+  replicas: 1 # nombre de pod grafana
   template:
     metadata:
       labels:
-        app: grafana
+        app: grafana # label du pod grafana qui  relie le pod au deployment et au service
     spec:
       containers:
       - name: grafana
@@ -18,15 +18,15 @@ spec:
         ports:
           - containerPort: 3000 
         volumeMounts: 
-          - name: grafana-storage
+          - name: grafana-storage # pvc pour stocker les données de grafana
             mountPath: /var/lib/grafana #Grafana stocke son état (dashboards, datasources, etc.) dans /var/lib/grafana
-          - name: grafana-config
-            mountPath: /etc/grafana/provisioning/datasources
+          - name: grafana-config # charge les datasources automatiquement au demarrage de grafana
+            mountPath: /etc/grafana/provisioning/datasources # datasources.yaml sera monté ici
       volumes: 
-        - name: grafana-storage
+        - name: grafana-storage # pour la persistance des dashboards
           persistentVolumeClaim:
             claimName: grafana-pvc 
-        - name: grafana-config
+        - name: grafana-config # pour injecter la configuration datasources
           configMap:
             name: grafana-configmap
 
@@ -39,7 +39,11 @@ spec:
   selector:
     app: grafana
   ports: 
-    - port: 3000
+    - port: 3000 # pourquoi on peut utiliser le meme port pour grafana et react? ca pose pas de probleme ?
       targetPort: 3000
       protocol: TCP
   type: ClusterIP
+#  pourquoi on peut utiliser le meme port pour grafana et react?
+# reponse: c'est possible d'utiliser le meme port sur kubernetes car il isole les applications dans des pods 
+# le pod a sa propre interface reseau, pile TCP/IP, propre port
+# et à l'exterieur, il faut alors utiliser port forward different pour ne pas creer de conflit entre les applications

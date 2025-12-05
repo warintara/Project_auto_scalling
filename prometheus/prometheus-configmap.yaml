@@ -6,16 +6,17 @@ metadata:
 data:
   prometheus.yml: |
     global:
-      scrape_interval: 5s
-      evaluation_interval: 5s
-    scrape_configs:
-        - job_name: 'prometheus'
+      scrape_interval: 5s # collecter les métrics toutes les 5 secondes
+      evaluation_interval: 5s # évaluer les règles toutes les 5 secondes
+    scrape_configs: # les cibles que Prometheus va surveiller.
+        - job_name: 'prometheus' # surveiller lui-même (standard)
+                                  # CPU utilisé par Prometheus, nombre de séries temporelles, mémoire consommée
           static_configs:
             - targets: ['localhost:9090']
   
-        - job_name: 'nodejs-app'
+        - job_name: 'nodejs-app' # important : ton Node.js doit exporter un endpoint /metrics
           static_configs:
-            - targets: ['node-service:3000']
+            - targets: ['node-service:3000'] # Prometheus va envoyer une requête HTTP GET à node-service:3000/metrics
   
         - job_name: 'redis-master'
           static_configs:

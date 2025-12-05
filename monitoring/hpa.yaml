@@ -4,19 +4,19 @@ kind: HorizontalPodAutoscaler
 metadata:
   name: nodejs-hpa
 spec:
-  scaleTargetRef:
+  scaleTargetRef: # cibre que le HPA surveille et ajuste 
     apiVersion: apps/v1
     kind: Deployment
     name: node-deployment
-  minReplicas: 1
-  maxReplicas: 5
-  metrics:
-    - type: Resource
+  minReplicas: 1 # en cas de faible charge 
+  maxReplicas: 5 # si la charge augmente
+  metrics: # criteres de mise à l'échelle
+    - type: Resource # utilise les ressources interne (CPU / mémoire)
       resource:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: 50
+          averageUtilization: 50 # si l'utilisation moyenne du CPU dépasse 50%, augmenter les replicas
 
 #HPA basé sur le nombre de lecture de redis replica
 ---
@@ -27,4 +27,14 @@ metadata:
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
-    kind: Deployment  
+    kind: Deployment
+    name: redis-replicas
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 60

@@ -5,15 +5,17 @@
 # it in containers themselves is to use environment variables. 
 # so configmap can either be used as data storage or environment variable ? or even a secret storage ? 
 apiVersion: v1
-kind: ConfigMap
+kind: ConfigMap # sert à injecter les configurations dans les pods
+                # ce config va etre monté dans le pod/ deploiement de grafana
 metadata:
   name: grafana-configmap
-data:
-  datasources.yaml: |
-    apiVersion: 1
-    datasources:
-      - name: Prometheus
+data: # crées un fihcier qui s'appelle datasources.yaml # | signifie que "le bloc suivant contient du yaml multi-lignes"
+  datasources.yaml: | 
+    apiVersion: 1 # la structure attendue par grafana pour definir une datasource
+    datasources:  # liste des sources de données que Grafana doit charger automatiquement au démarrage
+      - name: Prometheus  # Donc Grafana activera les dashboards et panels compatibles Prometheus.
         type: prometheus
-        access: proxy
+        access: proxy # grafana contacte prometheus à travers son propre serveur (proxy)/ backend
+                      # autre choix possible : direct = navigateur contacte directement prometheus (dangereux pour la securité)
         url: http://prometheus-service:9090
-        isDefault: true
+        isDefault: true # “Toutes les dashboards et panels utiliseront Prometheus par défaut.”
